@@ -1,0 +1,6 @@
+Revision history for Perl extension Mail::vpopmail.
+
+0.50  Mon Dec 13 21:44:37 2004
+	- original version; created by h2xs 1.21 with options
+		-AX Mail::vpopmail
+
