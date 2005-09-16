@@ -1,9 +1,9 @@
 # Mail::vpopmail.pm
-# $Id: vpopmail.pm,v 0.50 2004/12/13 21:45:54 jkister Exp $
-# Copyright (c) 2004 Jeremy Kister.
+# $Id: vpopmail.pm,v 0.51 2005/12/15 20:36:34 jkister Exp $
+# Copyright (c) 2004-2005 Jeremy Kister.
 # Released under Perl's Artistic License.
 
-$Mail::vpopmail::VERSION = "0.50";
+$Mail::vpopmail::VERSION = "0.51";
 
 =head1 NAME
 
@@ -165,10 +165,10 @@ sub get {
 					my $found;
 					while(<V>){
 						chomp;
-						if(/^${user}:([^:]+):(\d+):(\d+):([^:]*):([^:]+):([^:]+):([^:]*)/){
+						if(/^${user}:([^:]+):(\d+):(\d+):([^:]*):([^:]+):([^:]+)(:([^:]+))?/){
 							my %hash;
 							($hash{'crypt'},$hash{'uid'},$hash{'gid'},$hash{'comment'}) = ($1,$2,$3,$4);
-							($hash{'maildir'},$hash{'quota'},$hash{'plain'}) = ($5,$6,$7);
+							($hash{'maildir'},$hash{'quota'},$hash{'plain'}) = ($5,$6,$8);
 							$found=1;
 
 							if($_arg{'cache'}){
