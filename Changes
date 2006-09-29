@@ -1,5 +1,11 @@
 Revision history for Perl extension Mail::vpopmail.
 
+0.52 Fri Sep 29 15:23:41 EDT 2006
+   - added feature to get all mailboxes in a domain
+   - added feature to get all properties of a domain
+	- added feature to get all domains
+	- added feature to get all domains and their directories
+
 0.51 Thu Sep 15 20:35:06 EDT 2005
    - enabled compatiblity for vpopmail installations compiled
      with --disable-clear-passwd
