@@ -1,5 +1,9 @@
 Revision history for Perl extension Mail::vpopmail.
 
+0.53 Tue Oct 17 20:45:21 EDT 2006
+   - updated forgotten Constructor documentation 
+     (such as userinfo, domaininfo and alldomains)
+
 0.52 Fri Sep 29 15:23:41 EDT 2006
    - added feature to get all mailboxes in a domain
    - added feature to get all properties of a domain

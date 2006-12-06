@@ -1,9 +1,9 @@
 # Mail::vpopmail.pm
-# $Id: vpopmail.pm,v 0.52 2006/09/29 15:23:41 jkister Exp $
+# $Id: vpopmail.pm,v 0.53 2006/10/17 20:45:21 jkister Exp $
 # Copyright (c) 2004-2006 Jeremy Kister.
 # Released under Perl's Artistic License.
 
-$Mail::vpopmail::VERSION = "0.52";
+$Mail::vpopmail::VERSION = "0.53";
 
 =head1 NAME
 
@@ -39,7 +39,7 @@ B<cache> - Cache results of queries (0=Off, 1=On).  Default=On.
 
 B<debug>  - Print debugging info to STDERR (0=Off, 1=On).  Default=On.
 
-=item get( email => $email, field => <fields> );
+=item userinfo( email => $email, field => <fields> );
 
 B<email> - the email address to get properties on
 B<field> - the field(s) you want to be returned (may be comma separated):
@@ -60,7 +60,7 @@ B<field> - the field(s) you want to be returned (may be comma separated):
 
 	plain - return the plain text password, if available
 
-=item get( domain => $domain, field => <field> );
+=item domaininfo( domain => $domain, field => <field> );
 
 B<domain> - the domain to get properties on
 B<field> - the field want to be returned:
@@ -69,6 +69,14 @@ B<field> - the field want to be returned:
 
    all - return an array ref of hash refs of all data for the domain
 	
+=item alldomains( field => <field> );
+
+B<field> - the field want to be returned:
+
+	name - returns an array reference of the names of all domains
+
+	dir - returns a hash reference of domain name -> domain directory
+
 
 =head1 EXAMPLES
 
