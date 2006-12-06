@@ -1,9 +1,9 @@
 # Mail::vpopmail.pm
-# $Id: vpopmail.pm,v 0.53 2006/10/17 20:45:21 jkister Exp $
+# $Id: vpopmail.pm,v 0.54 2006/12/06 15:14:22 jkister Exp $
 # Copyright (c) 2004-2006 Jeremy Kister.
 # Released under Perl's Artistic License.
 
-$Mail::vpopmail::VERSION = "0.53";
+$Mail::vpopmail::VERSION = "0.54";
 
 =head1 NAME
 
@@ -64,6 +64,8 @@ B<field> - the field(s) you want to be returned (may be comma separated):
 
 B<domain> - the domain to get properties on
 B<field> - the field want to be returned:
+
+   dir - return the vpopmail domain directory
 
 	mailboxes - return an array reference containing all the mailboxes
 
@@ -306,6 +308,11 @@ sub domaininfo {
 
 	my %hash = ( dir => (exists($_cache{$arg{domain}}{dir})) ? $_cache{$arg{domain}}{dir} : Mail::vpopmail->_dir($arg{domain}) );
 	warn "hash{dir}: $hash{dir}\n" if($_arg{debug});
+
+	if($arg{field} eq 'dir'){
+		return($hash{dir});
+	}
+
 	if(open(VPASSWD, "$hash{dir}/vpasswd")){
 		my @return;
 		while(<VPASSWD>){

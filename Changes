@@ -1,5 +1,8 @@
 Revision history for Perl extension Mail::vpopmail.
 
+0.54 Wed Dec  6 15:14:22 EST 2006
+   - added dir field to domaininfo
+
 0.53 Tue Oct 17 20:45:21 EDT 2006
    - updated forgotten Constructor documentation 
      (such as userinfo, domaininfo and alldomains)
