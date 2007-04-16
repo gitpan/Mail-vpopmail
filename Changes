@@ -1,5 +1,9 @@
 Revision history for Perl extension Mail::vpopmail.
 
+0.60 Mon Apr 16 00:32:24 EDT 2007
+   - added sql support (thanks to Werner Garcia for hints)
+   - removed legacy "get" function left over from v0.52
+
 0.54 Wed Dec  6 15:14:22 EST 2006
    - added dir field to domaininfo
 
