@@ -3,5 +3,5 @@ Changes
 MANIFEST
 Makefile.PL
 README
-vpopmail.pm
 test.pl
+vpopmail.pm
