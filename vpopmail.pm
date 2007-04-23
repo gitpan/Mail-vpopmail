@@ -1,9 +1,9 @@
 # Mail::vpopmail.pm
-# $Id: vpopmail.pm,v 0.60b2 2007/04/16 00:32:24 jkister Exp $
+# $Id: vpopmail.pm,v 0.60b3 2007/04/16 00:32:24 jkister Exp $
 # Copyright (c) 2004-2007 Jeremy Kister.
 # Released under Perl's Artistic License.
 
-$Mail::vpopmail::VERSION = "0.60b2";
+$Mail::vpopmail::VERSION = "0.60b3";
 
 =head1 NAME
 
@@ -37,7 +37,7 @@ mailbox's directories.
 
 =item new( [OPTIONS] );
 
-C<OPTIONS> are passwed in a hash like fashion, using key and value
+C<OPTIONS> are passed in a hash like fashion, using key and value
 pairs.  Possible options are:
 
 B<cache> - Cache results of queries (0=Off, 1=On).  Default=On.
@@ -59,7 +59,8 @@ B<dbpw> - SQL Password.  Default=vpoppasswd.
 =item userinfo( email => $email, field => <fields> );
 
 B<email> - the email address to get properties on
-B<field> - the field(s) you want to be returned (may be comma separated):
+
+B<field> - the field(s) to be returned (may be comma separated):
 
 	dir - return this domain's vpopmail domains directory
 
@@ -80,21 +81,24 @@ B<field> - the field(s) you want to be returned (may be comma separated):
 =item domaininfo( domain => $domain, field => <field> );
 
 B<domain> - the domain to get properties on
-B<field> - the field want to be returned:
+
+B<field> - the field to be returned:
 
    dir - return the vpopmail domain directory
 
-	mailboxes - return an array reference containing all the mailboxes
+   mailboxes - return an array reference containing all the mailboxes
 
    all - return an array ref of hash refs of all data for the domain
 	
 =item alldomains( field => <field> );
 
-B<field> - the field want to be returned:
+B<field> - the field to be returned:
 
-	name - returns an array reference of the names of all domains
+   name - returns an array reference of the names of all domains
 
-	dir - returns a hash reference of domain name -> domain directory
+   dir - returns an array refrence of all domain directories
+
+   map - returns a hash reference of domain name -> domain directory
 
 
 =head1 EXAMPLES
@@ -111,9 +115,15 @@ B<field> - the field want to be returned:
 		print "$domain\n";
 	}
 
-	# find all domains and their directories
+	# find all domains directories
 	my $dirlist_aref = $vchkpw->alldomains(field => 'dir');
-	foreach my $href (@${dirlist_aref}){
+	foreach my $dir (@${dirlist_aref}){
+		print "$dir\n";
+	}
+
+	# find all domains and their directories
+	my $alllist_aref = $vchkpw->alldomains(field => 'map');
+	foreach my $href (@${alllist_aref}){
 		print "$href->{name} => $href->{dir}\n";
 	}
 
@@ -137,7 +147,7 @@ B<field> - the field want to be returned:
 		while(my($key,$value) = each %{$href}){
 			print " found $key => $value\n";
 		}
-   }
+	}
 
 	# individual user stuff
 	my $email = shift;
@@ -283,10 +293,10 @@ sub userinfo {
 
 	if(defined($user) && defined($domain)){
 		my @return;
-		my %hash = ( dir => Mail::vpopmail->_dir($domain) );
+		my $dir = Mail::vpopmail->_dir($domain);
 
 		if($arg{field} eq 'dir'){
-			push @return, $hash{dir};
+			push @return, $dir;
 		}else{
 			if(exists($_cache{$arg{email}}{crypt})){
 			warn "cache found for $arg{email}\n" if($_arg{debug});
@@ -296,19 +306,19 @@ sub userinfo {
 			}else{
 				my (%uhash,$found);
 				if($_arg{auth_module} eq 'cdb'){
-					if(open(VPASSWD, "$hash{dir}/vpasswd")){
+					if(open(VPASSWD, "${dir}/vpasswd")){
 						while(<VPASSWD>){
 							chomp;
 							if(/^${user}:([^:]+):(\d+):(\d+):([^:]*):([^:]+):([^:]+)(:([^:]+))?/){
 								%uhash = (crypt => $1, uid => $2, gid => $3, comment => $4,
-								          maildir => $5, quota => $6, plain => $8, dir => $hash{dir});
+								          maildir => $5, quota => $6, plain => $8, dir => $dir);
 								$found=1;
 								last;
 							}
 						}
 						close VPASSWD;
 					}else{
-						warn "cannot open $hash{dir}/vpasswd: $!\n" if($_arg{debug});
+						warn "cannot open ${dir}/vpasswd: $!\n" if($_arg{debug});
 					}
 				}else{
 					# sql
@@ -319,7 +329,7 @@ sub userinfo {
 					$sth->execute;
 					my $row = $sth->fetchrow_arrayref;
 					%uhash = (crypt => $row->[0], uid => $row->[1], gid => $row->[2], comment => $row->[3],
-					          maildir => $row->[4], quota => $row->[5], plain => $row->[6], dir => $hash{dir});
+					          maildir => $row->[4], quota => $row->[5], plain => $row->[6], dir => ${dir});
 					$found=1 if(exists($uhash{crypt}));
 				}
 				if($found){
@@ -347,7 +357,7 @@ sub userinfo {
 sub alldomains {
 	my $class = shift;
 	my %arg = @_;
-	unless($arg{field} eq 'name' || $arg{field} eq 'dir'){
+	unless($arg{field} eq 'name' || $arg{field} eq 'dir' || $arg{field} eq 'map'){
 		if($_arg{debug}){
 			warn "syntax error: field: $arg{field}\n";
 		}
@@ -359,8 +369,10 @@ sub alldomains {
 		my @array;
 		while(<ASSIGN>){
 			if(/^\+([^:]+)\-:[^:]+:\d+:\d+:([^:]+):-:/){
-				if($arg{field} eq 'dir'){
+				if($arg{field} eq 'map'){
 					push @array, { name => $1, dir => $2 };
+				}elsif($arg{field} eq 'dir'){
+					push @array, $2;
 				}else{
 					push @array, $1;
 				}
